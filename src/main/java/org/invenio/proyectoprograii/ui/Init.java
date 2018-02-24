@@ -30,7 +30,7 @@ public class Init {
         OrganizacionService organizacionService = context.getBean(OrganizacionService.class);
         
         if(organizacionService.getOrganizaciones().isEmpty()){
-            FrmPrueba frmPrueba = new FrmPrueba();
+            FrmPrueba frmPrueba = new FrmPrueba(context);
             frmPrueba.setVisible(true);
         } else {
             FrmEscritorio frmEscritorio = new FrmEscritorio(context);
