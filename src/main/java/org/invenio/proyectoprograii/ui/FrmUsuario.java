@@ -9,6 +9,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.invenio.proyectoprograii.orm.Organizacion;
 import org.invenio.proyectoprograii.orm.Usuario;
 import org.invenio.proyectoprograii.service.OrganizacionService;
 import org.invenio.proyectoprograii.service.UsuarioService;
@@ -287,12 +288,12 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
         String error = validarCampos();
 
         if (error.equals("")) {
+            System.out.println(organizacionService.getOrganizacion());
             Usuario usuario = new Usuario();
-            usuario.setIdUsuario(6);
             usuario.setTipo(cmbTipo.getSelectedItem().toString());
             usuario.setDescripcion(txtDescripcion.getText());
-            usuario.setContrasena(txtPassword.getPassword().toString());
-            usuario.setOrganizacion(organizacionService.getOrganizacion("ABC1"));
+            usuario.setContrasena(new String(txtPassword.getPassword()));
+            usuario.setOrganizacion(organizacionService.getOrganizacion());
 
             if (usuarioService.save(usuario)) {
                 JOptionPane.showMessageDialog(winUsuario, "Usuario guardado exitosamente");
@@ -357,10 +358,15 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
             txtDescripcion.requestFocus();
             return "Debe ingresar una descripción";
         }
+        if(usuarioService.validarDescripcion(txtDescripcion.getText())){
+            txtDescripcion.requestFocus();
+            return "Debe ingresar una descripción diferente";
+        }
         if (txtPassword.getPassword().length == 0) {
             txtPassword.requestFocus();
             return "Debe ingresar una contraseña";
         }
         return "";
     }
+    
 }
