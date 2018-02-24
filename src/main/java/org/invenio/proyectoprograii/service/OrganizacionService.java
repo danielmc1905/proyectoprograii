@@ -5,6 +5,7 @@
  */
 package org.invenio.proyectoprograii.service;
 
+import java.util.List;
 import org.invenio.proyectoprograii.dao.OrganizacionDAO;
 import org.invenio.proyectoprograii.orm.Organizacion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,11 @@ public class OrganizacionService {
     public Organizacion getOrganizacion(String id){
         
         return organizacionDAO.getOrganizacionById(id);
+    }
+    
+    public List<Organizacion> getOrganizaciones(){
+        
+        return organizacionDAO.getAllWithHQL();
     }
 
     private String validateOrganizacion(Organizacion organizacion) {

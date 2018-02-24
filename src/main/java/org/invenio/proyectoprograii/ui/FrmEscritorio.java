@@ -5,6 +5,9 @@
  */
 package org.invenio.proyectoprograii.ui;
 
+import org.invenio.proyectoprograii.ui.FrmCliente;
+import org.invenio.proyectoprograii.ui.FrmOrganizacion;
+import org.invenio.proyectoprograii.ui.FrmUsuario;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -19,17 +22,18 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @SpringBootApplication
 @ComponentScan("org.invenio.proyectoprograii")
-public class FrmEscritorio extends javax.swing.JFrame implements ApplicationContextAware {
+public class FrmEscritorio extends javax.swing.JFrame {
 
     /**
      * Creates new form frmEscritorio
      */
     private static ApplicationContext ctx;
 
-    public FrmEscritorio() {
+    public FrmEscritorio(ApplicationContext context) {
         initComponents();
         //cargarDatos();
         this.setExtendedState(MAXIMIZED_BOTH);
+        ctx = context;
     }
 
     /**
@@ -46,7 +50,7 @@ public class FrmEscritorio extends javax.swing.JFrame implements ApplicationCont
         btnFactura = new javax.swing.JButton();
         btnInventario = new javax.swing.JButton();
         btnUsuario = new javax.swing.JButton();
-        btnOrganizacion = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         escritorio = new javax.swing.JDesktopPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -91,16 +95,16 @@ public class FrmEscritorio extends javax.swing.JFrame implements ApplicationCont
         });
         jToolBar1.add(btnUsuario);
 
-        btnOrganizacion.setText("Organizacion");
-        btnOrganizacion.setFocusable(false);
-        btnOrganizacion.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnOrganizacion.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnOrganizacion.addActionListener(new java.awt.event.ActionListener() {
+        jButton1.setText("jButton1");
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOrganizacionActionPerformed(evt);
+                jButton1ActionPerformed(evt);
             }
         });
-        jToolBar1.add(btnOrganizacion);
+        jToolBar1.add(jButton1);
 
         javax.swing.GroupLayout escritorioLayout = new javax.swing.GroupLayout(escritorio);
         escritorio.setLayout(escritorioLayout);
@@ -143,27 +147,26 @@ public class FrmEscritorio extends javax.swing.JFrame implements ApplicationCont
         escritorio.add(frmUsuario);
     }//GEN-LAST:event_btnUsuarioActionPerformed
 
-    private void btnOrganizacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrganizacionActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         FrmOrganizacion frmOrganizacion = new FrmOrganizacion(ctx);
         frmOrganizacion.setVisible(true);
         escritorio.add(frmOrganizacion);
-    }//GEN-LAST:event_btnOrganizacionActionPerformed
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
 
-        final ConfigurableApplicationContext context = new SpringApplicationBuilder(FrmEscritorio.class).headless(false).run(args);
+        //final ConfigurableApplicationContext context = new SpringApplicationBuilder(FrmEscritorio.class).headless(false).run(args);
 
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                FrmEscritorio frm = context.getBean(FrmEscritorio.class);
+                FrmEscritorio frm = ctx.getBean(FrmEscritorio.class);
                 frm.setVisible(true);
-                ctx = context;
 
             }
         });
@@ -173,15 +176,12 @@ public class FrmEscritorio extends javax.swing.JFrame implements ApplicationCont
     private javax.swing.JButton btnClientes;
     private javax.swing.JButton btnFactura;
     private javax.swing.JButton btnInventario;
-    private javax.swing.JButton btnOrganizacion;
     private javax.swing.JButton btnUsuario;
     private javax.swing.JDesktopPane escritorio;
+    private javax.swing.JButton jButton1;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void setApplicationContext(ApplicationContext ac) throws BeansException {
-        this.ctx = ac;
-    }
+    
 
 }

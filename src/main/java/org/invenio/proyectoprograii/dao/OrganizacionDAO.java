@@ -71,7 +71,7 @@ public class OrganizacionDAO extends BaseDAO{
         return (Organizacion) criteria.uniqueResult();
     }
 
-    public List<Organizacion> getAllUsersWithHQL() {
+    public List<Organizacion> getAllWithHQL() {
 
         Session session = getSession();
 
