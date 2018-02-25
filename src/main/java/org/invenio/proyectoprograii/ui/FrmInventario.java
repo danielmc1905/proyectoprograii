@@ -5,17 +5,36 @@
  */
 package org.invenio.proyectoprograii.ui;
 
+import java.util.List;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import org.invenio.proyectoprograii.orm.Inventario;
+import org.invenio.proyectoprograii.service.InventarioService;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+
 /**
  *
  * @author maste
  */
+@SpringBootApplication
+@ComponentScan("org.invenio.proyectoprograii")
 public class FrmInventario extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form FrmInventario
      */
-    public FrmInventario() {
+    ImageIcon img;
+    private InventarioService inventarioService;
+    String labels[] = {"CÓDIGO", "DESCRIPCIÓN", "CANTIDAD", "PRECIO UNITARIO",
+        "TOTAL"};
+
+    public FrmInventario(ApplicationContext context) {
         initComponents();
+        inventarioService = context.getBean(InventarioService.class);
+        cargarDatos();
     }
 
     /**
@@ -27,21 +46,499 @@ public class FrmInventario extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        winProductos = new javax.swing.JDialog();
+        jPanel1 = new javax.swing.JPanel();
+        txtCodigo = new javax.swing.JTextField();
+        txtCantidad = new javax.swing.JTextField();
+        btnAceptar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        txtPrecioUnitario = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtDescripcion = new javax.swing.JTextArea();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        winBuscar = new javax.swing.JDialog();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        txtBuscarCodigo = new javax.swing.JTextField();
+        btnBuscarProducto = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblProductos = new javax.swing.JTable();
+        jToolBar1 = new javax.swing.JToolBar();
+        btnGuardar = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
+        btnRefrescar = new javax.swing.JButton();
+
+        winProductos.setAlwaysOnTop(true);
+
+        btnAceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/checked.png"))); // NOI18N
+        btnAceptar.setText("Aceptar");
+        btnAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAceptarActionPerformed(evt);
+            }
+        });
+
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/error.png"))); // NOI18N
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Cantidad:");
+
+        txtDescripcion.setColumns(20);
+        txtDescripcion.setRows(5);
+        jScrollPane2.setViewportView(txtDescripcion);
+
+        jLabel2.setText("Descripción:");
+
+        jLabel4.setText("Precio unitario:");
+
+        jLabel1.setText("Código:");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
+                        .addGap(32, 32, 32)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane2)
+                            .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtPrecioUnitario, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnAceptar)
+                        .addGap(54, 54, 54)
+                        .addComponent(btnCancelar)))
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(txtPrecioUnitario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(35, 35, 35)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCancelar)
+                    .addComponent(btnAceptar))
+                .addGap(20, 20, 20))
+        );
+
+        javax.swing.GroupLayout winProductosLayout = new javax.swing.GroupLayout(winProductos.getContentPane());
+        winProductos.getContentPane().setLayout(winProductosLayout);
+        winProductosLayout.setHorizontalGroup(
+            winProductosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(winProductosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        winProductosLayout.setVerticalGroup(
+            winProductosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(winProductosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        winBuscar.setAlwaysOnTop(true);
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Buscar producto"));
+
+        jLabel8.setText("Código:");
+
+        btnBuscarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/search.png"))); // NOI18N
+        btnBuscarProducto.setText("Buscar");
+        btnBuscarProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarProductoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel8)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtBuscarCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(46, 46, 46)
+                        .addComponent(btnBuscarProducto)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtBuscarCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addGap(33, 33, 33)
+                .addComponent(btnBuscarProducto)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout winBuscarLayout = new javax.swing.GroupLayout(winBuscar.getContentPane());
+        winBuscar.getContentPane().setLayout(winBuscarLayout);
+        winBuscarLayout.setHorizontalGroup(
+            winBuscarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(winBuscarLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(30, Short.MAX_VALUE))
+        );
+        winBuscarLayout.setVerticalGroup(
+            winBuscarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(winBuscarLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
+        );
+
+        setClosable(true);
+        setMaximizable(true);
+        setResizable(true);
+
+        tblProductos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tblProductos);
+
+        jToolBar1.setRollover(true);
+
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/save.png"))); // NOI18N
+        btnGuardar.setText("Guardar");
+        btnGuardar.setFocusable(false);
+        btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnGuardar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnGuardar);
+
+        btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
+        btnEditar.setText("Editar");
+        btnEditar.setFocusable(false);
+        btnEditar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnEditar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnEditar);
+
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/file.png"))); // NOI18N
+        btnEliminar.setText("Eliminar");
+        btnEliminar.setFocusable(false);
+        btnEliminar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnEliminar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnEliminar);
+
+        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/carpeta.png"))); // NOI18N
+        btnBuscar.setText("Buscar");
+        btnBuscar.setFocusable(false);
+        btnBuscar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnBuscar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnBuscar);
+
+        btnRefrescar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/refrescar.png"))); // NOI18N
+        btnRefrescar.setText("Refrescar");
+        btnRefrescar.setFocusable(false);
+        btnRefrescar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnRefrescar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnRefrescar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefrescarActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnRefrescar);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 658, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 958, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 526, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        winProductos.setTitle("Guardar");
+        winProductos.setSize(440, 350);
+        winProductos.setLocationRelativeTo(this);
+        img = new ImageIcon(getClass().getResource("/icons/save.png"));
+        winProductos.setIconImage(img.getImage());
+        winProductos.setVisible(true);
+        txtCodigo.setEditable(true);
+    }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        int fila = tblProductos.getSelectedRow();
+        if (fila != -1) {
+            winProductos.setTitle("Editar");
+            winProductos.setSize(440, 350);
+            winProductos.setLocationRelativeTo(this);
+            img = new ImageIcon(getClass().getResource("/icons/edit.png"));
+            winProductos.setIconImage(img.getImage());
+            winProductos.setVisible(true);
+            txtCodigo.setEditable(false);
+
+            txtCodigo.setText(tblProductos.getValueAt(fila, 0).toString());
+            txtDescripcion.setText(tblProductos.getValueAt(fila, 1).toString());
+            txtCantidad.setText(tblProductos.getValueAt(fila, 2).toString());
+            txtPrecioUnitario.setText(tblProductos.getValueAt(fila, 3).toString());
+        } else {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar una fila");
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        int fila = tblProductos.getSelectedRow();
+        if (fila != -1) {
+
+            String codigo = tblProductos.getValueAt(fila, 0).toString();
+
+            Inventario inventario = new Inventario();
+            inventario.setCodigo(codigo);
+            inventario.setDescripcion(tblProductos.getValueAt(fila, 1).toString());
+            inventario.setCantidad(Integer.parseInt(tblProductos.getValueAt(fila, 2).toString()));
+            inventario.setPrecioUnitario(Double.parseDouble(tblProductos.getValueAt(fila, 3).toString()));
+            inventario.setTotal(Double.parseDouble(tblProductos.getValueAt(fila, 4).toString()));
+
+            int opcion = JOptionPane.showConfirmDialog(this, "Seguro que desea eliminar este producto?",
+                    "Eliminar",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            if (opcion == 0) {
+                if (inventarioService.delete(inventario)) {
+                    JOptionPane.showMessageDialog(this, "Producto eliminado exitosamente");
+                }
+                cargarDatos();
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar una fila");
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        winBuscar.setTitle("Buscar");
+        winBuscar.setLocationRelativeTo(this);
+        winBuscar.setVisible(true);
+        winBuscar.setSize(300, 250);
+        img = new ImageIcon(getClass().getResource("/icons/carpeta.png"));
+        winBuscar.setIconImage(img.getImage());
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnRefrescarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefrescarActionPerformed
+        cargarDatos();
+    }//GEN-LAST:event_btnRefrescarActionPerformed
+
+    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+        String error = validarCampos();
+        if (error.equals("")) {
+            
+            int cantidad = Integer.parseInt(txtCantidad.getText());
+            double precioUnitario = Double.parseDouble(txtPrecioUnitario.getText());
+
+            Inventario inventario = new Inventario();
+            inventario.setCodigo(txtCodigo.getText().toUpperCase());
+            inventario.setDescripcion(txtDescripcion.getText());
+            inventario.setCantidad(cantidad);
+            inventario.setPrecioUnitario(precioUnitario);
+            inventario.setTotal(cantidad * precioUnitario);
+            
+            if(winProductos.getTitle().equals("Guardar")){
+                if(inventarioService.save(inventario)){
+                    JOptionPane.showMessageDialog(winProductos, "Producto agregado exitosamente");
+                }
+            } else{
+                if(inventarioService.update(inventario)){
+                    JOptionPane.showMessageDialog(winProductos, "Producto editado exitosamente");
+                }
+            }
+            winProductos.dispose();
+            cargarDatos();
+        } else {
+            JOptionPane.showMessageDialog(winProductos, error, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAceptarActionPerformed
+
+    private void btnBuscarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarProductoActionPerformed
+        if (!txtBuscarCodigo.getText().trim().equals("")) {
+            String codigo = txtBuscarCodigo.getText();
+            DefaultTableModel tablaBusqueda = new DefaultTableModel();
+            tablaBusqueda.setColumnIdentifiers(labels);
+            Inventario inventario = inventarioService.getInventoryItem(codigo);
+
+            String row[] = new String[5];
+            row[0] = inventario.getCodigo();
+            row[1] = inventario.getDescripcion();
+            row[2] = "" + inventario.getCantidad();
+            row[3] = "" + inventario.getPrecioUnitario();
+            row[4] = "" + inventario.getTotal();
+
+            tablaBusqueda.addRow(row);
+            tblProductos.setModel(tablaBusqueda);
+            winBuscar.dispose();
+        } else {
+            JOptionPane.showMessageDialog(winBuscar, "Debe ingresar un código");
+        }
+
+    }//GEN-LAST:event_btnBuscarProductoActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        winBuscar.dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAceptar;
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnBuscarProducto;
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnRefrescar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JTable tblProductos;
+    private javax.swing.JTextField txtBuscarCodigo;
+    private javax.swing.JTextField txtCantidad;
+    private javax.swing.JTextField txtCodigo;
+    private javax.swing.JTextArea txtDescripcion;
+    private javax.swing.JTextField txtPrecioUnitario;
+    private javax.swing.JDialog winBuscar;
+    private javax.swing.JDialog winProductos;
     // End of variables declaration//GEN-END:variables
+
+    public void cargarDatos() {
+        DefaultTableModel tabla = new DefaultTableModel();
+        tabla.setColumnIdentifiers(labels);
+        List<Inventario> productos = inventarioService.getAllInventory();
+        String row[] = new String[5];
+        for (Inventario inventario : productos) {
+            row[0] = inventario.getCodigo();
+            row[1] = inventario.getDescripcion();
+            row[2] = "" + inventario.getCantidad();
+            row[3] = "" + inventario.getPrecioUnitario();
+            row[4] = "" + inventario.getTotal();
+            tabla.addRow(row);
+        }
+        tblProductos.setModel(tabla);
+    }
+
+    public String validarCampos() {
+
+        if (txtCodigo.getText().trim().equals("")) {
+            txtCodigo.requestFocus();
+            return "Debe ingresar un codigo";
+        }
+        if (txtDescripcion.getText().trim().equals("")) {
+            txtDescripcion.requestFocus();
+            return "Debe ingresar una descripción";
+        }
+        if (txtCantidad.getText().trim().equals("")) {
+            txtCantidad.requestFocus();
+            return "Debe ingresar la cantidad";
+        } else {
+            try {
+                Integer.parseInt(txtCantidad.getText());
+            } catch (NumberFormatException ex) {
+                txtCantidad.requestFocus();
+                return "La cantidad debe ser solo numeros";
+            }
+        }
+        if (txtPrecioUnitario.getText().trim().equals("")) {
+            txtPrecioUnitario.requestFocus();
+            return "Debe ingresar el precio unitario";
+        } else {
+            try {
+                Double.parseDouble(txtPrecioUnitario.getText());
+            } catch (NumberFormatException ex) {
+                txtPrecioUnitario.requestFocus();
+                return "El precio unitario debe ser solo numeros";
+            }
+        }
+
+        return "";
+    }
 }
