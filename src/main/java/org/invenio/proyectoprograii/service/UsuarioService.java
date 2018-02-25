@@ -23,23 +23,47 @@ public class UsuarioService {
     private UsuarioDAO usuarioDAO;
 
     public boolean save(Usuario usuario) {
+        
+        usuario.setIdUsuario(getUsuarios().size()+1);
 
         return usuarioDAO.save(usuario);
     }
 
-    public boolean delete(Usuario usuario){
-        
+    public boolean delete(Usuario usuario) {
+
         return usuarioDAO.delete(usuario);
     }
 
-    public boolean update(Usuario usuario){
-        
+    public boolean update(Usuario usuario) {
+
         return usuarioDAO.update(usuario);
     }
-    
-    public List<Usuario> getUsuarios(){
-        
+
+    public List<Usuario> getUsuarios() {
+
         return usuarioDAO.getAllUsuariosWithHQL();
+    }
+
+    public boolean validarDescripcion(String descripcion) {
+
+        for (Usuario usuario : getUsuarios()) {
+            if (descripcion.equals(usuario.getDescripcion())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
+    public Usuario validarUsuario(String descripcion, String password){
+        for (Usuario usuario : getUsuarios()) {
+            if (descripcion.equals(usuario.getDescripcion()) && 
+                    password.equals(usuario.getContrasena())) {
+                return usuario;
+            }
+        }
+        
+        return null;
     }
 
     private String validateUsuario(Usuario usuario) {
@@ -59,7 +83,7 @@ public class UsuarioService {
         if (StringUtils.isEmpty(usuario.getDescripcion())) {
             return "Debe digitar una descripcion para el usuario";
         }
-        if(StringUtils.isEmpty(usuario.getContrasena())){
+        if (StringUtils.isEmpty(usuario.getContrasena())) {
             return "Debe digitar una contrasena para el usuario";
         }
         return "";

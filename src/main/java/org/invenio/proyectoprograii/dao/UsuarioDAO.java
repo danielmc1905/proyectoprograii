@@ -43,7 +43,7 @@ public class UsuarioDAO extends BaseDAO {
         Session session = getSession();
 
         Criteria criteria = session.createCriteria(Usuario.class, "usuario")
-                .add(Restrictions.eq("usuario.id", id));
+                .add(Restrictions.eq("usuario.idUsuario", id));
 
         return (Usuario) criteria.uniqueResult();
     }

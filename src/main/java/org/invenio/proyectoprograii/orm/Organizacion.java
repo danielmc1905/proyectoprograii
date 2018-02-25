@@ -19,7 +19,7 @@ import javax.persistence.Table;
 )
 public class Organizacion implements java.io.Serializable {
 
-    private String idCliente;
+    private String idOrganizacion;
     private String nombre;
     private String direccion;
     private String correo;
@@ -32,13 +32,13 @@ public class Organizacion implements java.io.Serializable {
 
     @Id
 
-    @Column(name = "idCliente", unique = true, nullable = false, length = 30)
-    public String getIdCliente() {
-        return this.idCliente;
+    @Column(name = "idOrganizacion", unique = true, nullable = false, length = 30)
+    public String getIdOrganizacion() {
+        return this.idOrganizacion;
     }
 
-    public void setIdCliente(String idCliente) {
-        this.idCliente = idCliente;
+    public void setIdOrganizacion(String idOrganizacion) {
+        this.idOrganizacion = idOrganizacion;
     }
 
     @Column(name = "nombre", nullable = false, length = 45)

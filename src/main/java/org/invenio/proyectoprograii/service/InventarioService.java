@@ -6,6 +6,7 @@
 package org.invenio.proyectoprograii.service;
 
 
+import java.util.List;
 import org.invenio.proyectoprograii.dao.InventarioDAO;
 import org.invenio.proyectoprograii.orm.Inventario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,16 @@ public class InventarioService {
     public boolean update(Inventario inventario) {
 
         return inventarioDAO.update(inventario);
+    }
+    
+    public List<Inventario> getAllInventory(){
+        
+        return inventarioDAO.getAllInventoryWithHQL();
+    }
+    
+    public Inventario getInventoryItem(String codigo){
+        
+        return inventarioDAO.getInventarioById(codigo);
     }
 
     private String validateInventario(Inventario inventario) {

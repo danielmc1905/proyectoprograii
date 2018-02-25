@@ -77,7 +77,7 @@ public class FrmUsuario extends javax.swing.JInternalFrame {
 
         jLabel2.setText("Descripción:");
 
-        cmbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione", "Admin", "Vendedor", " " }));
+        cmbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione", "Admin", "Vendedor" }));
 
         btnAceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/checked.png"))); // NOI18N
         btnAceptar.setText("Aceptar");

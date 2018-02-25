@@ -5,15 +5,11 @@
  */
 package org.invenio.proyectoprograii.ui;
 
-import org.invenio.proyectoprograii.ui.FrmCliente;
-import org.invenio.proyectoprograii.ui.FrmOrganizacion;
-import org.invenio.proyectoprograii.ui.FrmUsuario;
-import org.springframework.beans.BeansException;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
+import org.invenio.proyectoprograii.orm.Usuario;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
@@ -28,12 +24,19 @@ public class FrmEscritorio extends javax.swing.JFrame {
      * Creates new form frmEscritorio
      */
     private static ApplicationContext ctx;
+    private Usuario usuario;
 
     public FrmEscritorio(ApplicationContext context) {
         initComponents();
-        //cargarDatos();
         this.setExtendedState(MAXIMIZED_BOTH);
         ctx = context;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+        if(!usuario.getTipo().equals("Admin")){
+            btnUsuario.setVisible(false);
+        }
     }
 
     /**
@@ -50,7 +53,6 @@ public class FrmEscritorio extends javax.swing.JFrame {
         btnFactura = new javax.swing.JButton();
         btnInventario = new javax.swing.JButton();
         btnUsuario = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
         escritorio = new javax.swing.JDesktopPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -74,6 +76,11 @@ public class FrmEscritorio extends javax.swing.JFrame {
         btnFactura.setFocusable(false);
         btnFactura.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnFactura.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnFactura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFacturaActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnFactura);
 
         btnInventario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/trolley.png"))); // NOI18N
@@ -81,6 +88,11 @@ public class FrmEscritorio extends javax.swing.JFrame {
         btnInventario.setFocusable(false);
         btnInventario.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnInventario.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnInventario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInventarioActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnInventario);
 
         btnUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/team.png"))); // NOI18N
@@ -94,17 +106,6 @@ public class FrmEscritorio extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(btnUsuario);
-
-        jButton1.setText("jButton1");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton1);
 
         javax.swing.GroupLayout escritorioLayout = new javax.swing.GroupLayout(escritorio);
         escritorio.setLayout(escritorioLayout);
@@ -137,21 +138,24 @@ public class FrmEscritorio extends javax.swing.JFrame {
 
     private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed
         FrmCliente frmCliente = new FrmCliente(ctx);
-        frmCliente.setVisible(true);
-        escritorio.add(frmCliente);
+        controlDeInstancia(frmCliente);
     }//GEN-LAST:event_btnClientesActionPerformed
 
     private void btnUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioActionPerformed
         FrmUsuario frmUsuario = new FrmUsuario(ctx);
-        frmUsuario.setVisible(true);
-        escritorio.add(frmUsuario);
+        controlDeInstancia(frmUsuario);
     }//GEN-LAST:event_btnUsuarioActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        FrmOrganizacion frmOrganizacion = new FrmOrganizacion(ctx);
-        frmOrganizacion.setVisible(true);
-        escritorio.add(frmOrganizacion);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturaActionPerformed
+        FrmFacturacion frmFacturacion = new FrmFacturacion(ctx);
+        frmFacturacion.setUsuario(usuario);
+        controlDeInstancia(frmFacturacion);
+    }//GEN-LAST:event_btnFacturaActionPerformed
+
+    private void btnInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventarioActionPerformed
+        FrmInventario frmInventario = new FrmInventario(ctx);
+        controlDeInstancia(frmInventario);
+    }//GEN-LAST:event_btnInventarioActionPerformed
 
     /**
      * @param args the command line arguments
@@ -159,8 +163,6 @@ public class FrmEscritorio extends javax.swing.JFrame {
     public static void main(String args[]) {
 
         //final ConfigurableApplicationContext context = new SpringApplicationBuilder(FrmEscritorio.class).headless(false).run(args);
-
-
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
@@ -178,10 +180,25 @@ public class FrmEscritorio extends javax.swing.JFrame {
     private javax.swing.JButton btnInventario;
     private javax.swing.JButton btnUsuario;
     private javax.swing.JDesktopPane escritorio;
-    private javax.swing.JButton jButton1;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 
-    
+    public void controlDeInstancia(JInternalFrame ifrm) {
+        boolean mostrar = true;
+        String nombre = ifrm.getTitle();
+        for (int i = 0; i < escritorio.getComponentCount(); i++) {
+            if (ifrm.getClass().isInstance(escritorio.getComponent(i))) {
+                JOptionPane.showMessageDialog(rootPane, "La ventana " + nombre
+                        + " que intenta abrir ya está abierta, cierre la "
+                        + "ventana actual e intente nuevamente");
+                ifrm.toFront();
+                mostrar = false;
+            }
+        }
+        if (mostrar) {
+            escritorio.add(ifrm);
+        }
+        ifrm.show();
+    }
 
 }

@@ -30,11 +30,11 @@ public class Init {
         OrganizacionService organizacionService = context.getBean(OrganizacionService.class);
         
         if(organizacionService.getOrganizaciones().isEmpty()){
-            FrmPrueba frmPrueba = new FrmPrueba(context);
-            frmPrueba.setVisible(true);
+            FrmOrganizacion frmOrganizacion = new FrmOrganizacion(context);
+            frmOrganizacion.setVisible(true);
         } else {
-            FrmEscritorio frmEscritorio = new FrmEscritorio(context);
-            frmEscritorio.setVisible(true);
+            FrmLogin frmLogin = new FrmLogin(context);
+            frmLogin.setVisible(true);
         }
     }
     

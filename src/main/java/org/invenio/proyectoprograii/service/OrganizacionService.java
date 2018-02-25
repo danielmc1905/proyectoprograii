@@ -37,9 +37,9 @@ public class OrganizacionService {
         return organizacionDAO.update(organizacion);
     }
     
-    public Organizacion getOrganizacion(String id){
+    public Organizacion getOrganizacion(){
         
-        return organizacionDAO.getOrganizacionById(id);
+        return organizacionDAO.getOrganizacionById();
     }
     
     public List<Organizacion> getOrganizaciones(){
@@ -53,7 +53,7 @@ public class OrganizacionService {
             return "La organizacion no puede ser nula";
         }
 
-        if (StringUtils.isEmpty(organizacion.getIdCliente())) {
+        if (StringUtils.isEmpty(organizacion.getIdOrganizacion())) {
             return "Debe digitar un id para la organizacion";
         }
 

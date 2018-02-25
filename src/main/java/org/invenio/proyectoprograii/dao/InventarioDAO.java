@@ -71,7 +71,7 @@ public class InventarioDAO extends BaseDAO{
         return (Inventario) criteria.uniqueResult();
     }
 
-    public List<Inventario> getAllUsersWithHQL() {
+    public List<Inventario> getAllInventoryWithHQL() {
 
         Session session = getSession();
 

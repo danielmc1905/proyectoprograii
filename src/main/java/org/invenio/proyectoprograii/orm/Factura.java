@@ -29,7 +29,6 @@ public class Factura implements java.io.Serializable {
     private Cliente cliente;
     private Usuario usuario;
     private String tipoFactura;
-    private String nombreCliente;
     private String codigoProducto;
     private String descripcion;
     private int cantidad;
@@ -79,15 +78,6 @@ public class Factura implements java.io.Serializable {
 
     public void setTipoFactura(String tipoFactura) {
         this.tipoFactura = tipoFactura;
-    }
-
-    @Column(name = "nombre_cliente", nullable = false, length = 45)
-    public String getNombreCliente() {
-        return this.nombreCliente;
-    }
-
-    public void setNombreCliente(String nombreCliente) {
-        this.nombreCliente = nombreCliente;
     }
 
     @Column(name = "codigoProducto", nullable = false, length = 45)

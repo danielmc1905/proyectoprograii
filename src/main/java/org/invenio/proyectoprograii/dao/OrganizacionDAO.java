@@ -61,15 +61,15 @@ public class OrganizacionDAO extends BaseDAO{
         return false;
     }
 
-    public Organizacion getOrganizacionById(String id) {
+    public Organizacion getOrganizacionById() {
 
         Session session = getSession();
 
-        Criteria criteria = session.createCriteria(Organizacion.class, "organizacion")
-                .add(Restrictions.eq("organizacion.idCliente", id));
+        Criteria criteria = session.createCriteria(Organizacion.class, "organizacion");
 
         return (Organizacion) criteria.uniqueResult();
     }
+    
 
     public List<Organizacion> getAllWithHQL() {
 
@@ -85,7 +85,7 @@ public class OrganizacionDAO extends BaseDAO{
         Session session = getSession();
 
         Criteria criteria = session.createCriteria(Organizacion.class, "organizacion")
-                .addOrder(Order.asc("organizacion.idCliente"));
+                .addOrder(Order.asc("organizacion.idOrganizacion"));
 
         if (withPhone != null) {
 
