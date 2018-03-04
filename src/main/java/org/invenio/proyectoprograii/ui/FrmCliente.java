@@ -391,6 +391,7 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         winCliente.setIconImage(img.getImage());
         winCliente.setVisible(true);
         txtCedula.setEditable(true);
+        limpiarCampos();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -586,6 +587,9 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         if (txtCedula.getText().trim().equals("")) {
             txtCedula.requestFocus();
             return "Debe ingresar un número de cédula";
+        } else if (txtCedula.getText().length() != 9) {
+            txtCedula.requestFocus();
+            return "La cédula debe ser de nueve digitos";
         } else {
             try {
                 Integer.parseInt(txtCedula.getText());
@@ -620,5 +624,15 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         }
 
         return "";
+    }
+    public void limpiarCampos(){
+        
+        txtCedula.setText("");
+        txtNombre.setText("");
+        txtApellido1.setText("");
+        txtApellido2.setText("");
+        txtCorreo.setText("");
+        txtTelefono.setText("");
+        txtDireccion.setText("");
     }
 }

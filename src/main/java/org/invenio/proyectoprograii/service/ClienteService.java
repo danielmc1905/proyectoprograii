@@ -39,7 +39,7 @@ public class ClienteService {
     
     public List<Cliente> getClientes(){
         
-        return clienteDAO.getAllUsersWithHQL();
+        return clienteDAO.getAllUsersWithCriteria(Boolean.TRUE);
     }
     
     public Cliente getCliente(int id){

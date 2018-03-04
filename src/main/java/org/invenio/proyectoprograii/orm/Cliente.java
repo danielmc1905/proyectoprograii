@@ -28,7 +28,7 @@ public class Cliente implements java.io.Serializable {
     private String correo;
     private String telefono;
     private String direccion;
-    private Set<Factura> facturas = new HashSet<Factura>(0);
+    private Set<Factura> facturas = new HashSet<>(0);
 
     public Cliente() {
     }

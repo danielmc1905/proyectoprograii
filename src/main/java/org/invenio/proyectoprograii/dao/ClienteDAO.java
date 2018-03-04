@@ -11,6 +11,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.invenio.proyectoprograii.orm.Cliente;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +86,7 @@ public class ClienteDAO extends BaseDAO {
         Session session = getSession();
 
         Criteria criteria = session.createCriteria(Cliente.class, "cliente")
+                .createAlias("cliente.facturas", "fact", JoinType.LEFT_OUTER_JOIN)
                 .addOrder(Order.asc("cliente.id"));
 
         if (withPhone != null) {

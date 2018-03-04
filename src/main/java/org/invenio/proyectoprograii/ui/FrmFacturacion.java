@@ -5,9 +5,11 @@
  */
 package org.invenio.proyectoprograii.ui;
 
+import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.invenio.proyectoprograii.orm.Cliente;
+import org.invenio.proyectoprograii.orm.Inventario;
 import org.invenio.proyectoprograii.orm.Usuario;
 import org.invenio.proyectoprograii.service.ClienteService;
 import org.invenio.proyectoprograii.service.FacturaService;
@@ -31,21 +33,27 @@ public class FrmFacturacion extends javax.swing.JInternalFrame {
     private final FacturaService facturaService;
     private final ClienteService clienteService;
     private final InventarioService inventarioService;
-    String labels[] = {"CÓDIGO", "DESCRIPCIÓN", "CANTIDAD", "TOTAL"};
-    
+    private static LinkedList<Inventario> listaProductos;
+    DefaultTableModel tabla;
+    String labels[] = {"CÓDIGO", "DESCRIPCIÓN", "CANTIDAD", "PRECIO UNITARIO", "TOTAL"};
+
     public FrmFacturacion(ApplicationContext context) {
         initComponents();
         facturaService = context.getBean(FacturaService.class);
         clienteService = context.getBean(ClienteService.class);
         inventarioService = context.getBean(InventarioService.class);
-        cargarDatos();
- 
+
+        listaProductos = new LinkedList<>();
+        cargarClientes();
+
     }
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+        if(!usuario.getTipo().equals("Admin")){
+            btnEliminarFactura.setVisible(false);
+        }
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -58,18 +66,18 @@ public class FrmFacturacion extends javax.swing.JInternalFrame {
 
         winProductos = new javax.swing.JDialog();
         jPanel1 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
+        txtIdProducto = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         btnCancelar = new javax.swing.JButton();
-        jTextField2 = new javax.swing.JTextField();
+        txtCantidad = new javax.swing.JTextField();
         btnAceptar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProductos = new javax.swing.JTable();
         btnAgregarProducto = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
         cmbCliente = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         btnProcesar = new javax.swing.JButton();
@@ -77,6 +85,7 @@ public class FrmFacturacion extends javax.swing.JInternalFrame {
         jLabel4 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
+        btnEliminarFactura = new javax.swing.JButton();
 
         winProductos.setAlwaysOnTop(true);
 
@@ -88,9 +97,19 @@ public class FrmFacturacion extends javax.swing.JInternalFrame {
 
         btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/error.png"))); // NOI18N
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         btnAceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/checked.png"))); // NOI18N
         btnAceptar.setText("Aceptar");
+        btnAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAceptarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -109,8 +128,8 @@ public class FrmFacturacion extends javax.swing.JInternalFrame {
                     .addComponent(jLabel7))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField1)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtIdProducto)
+                    .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27))
         );
         jPanel1Layout.setVerticalGroup(
@@ -118,12 +137,12 @@ public class FrmFacturacion extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtIdProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAceptar)
@@ -136,16 +155,16 @@ public class FrmFacturacion extends javax.swing.JInternalFrame {
         winProductosLayout.setHorizontalGroup(
             winProductosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(winProductosLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(51, 51, 51)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
         winProductosLayout.setVerticalGroup(
             winProductosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(winProductosLayout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, winProductosLayout.createSequentialGroup()
+                .addContainerGap(49, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(47, 47, 47))
         );
 
         setClosable(true);
@@ -177,8 +196,13 @@ public class FrmFacturacion extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/file.png"))); // NOI18N
-        jButton2.setText("Eliminar producto");
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cart.png"))); // NOI18N
+        btnEliminar.setText("Eliminar producto");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         cmbCliente.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -196,6 +220,14 @@ public class FrmFacturacion extends javax.swing.JInternalFrame {
 
         jLabel5.setText("Subtotal: 0");
 
+        btnEliminarFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/file.png"))); // NOI18N
+        btnEliminarFactura.setText("Eliminar factura");
+        btnEliminarFactura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarFacturaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -203,24 +235,25 @@ public class FrmFacturacion extends javax.swing.JInternalFrame {
             .addComponent(jScrollPane1)
             .addGroup(layout.createSequentialGroup()
                 .addGap(22, 22, 22)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(cmbCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(41, 41, 41)
+                .addComponent(jLabel4)
+                .addGap(18, 18, 18)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 159, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnEliminarFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnAgregarProducto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnAgregarProducto)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(cmbCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(41, 41, 41)
-                        .addComponent(jLabel4)
-                        .addGap(18, 18, 18)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 395, Short.MAX_VALUE)
-                        .addComponent(jLabel2)
-                        .addGap(35, 35, 35))))
+                        .addComponent(btnEliminar))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(107, 107, 107)
+                        .addComponent(jLabel2)))
+                .addGap(19, 19, 19))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -235,7 +268,7 @@ public class FrmFacturacion extends javax.swing.JInternalFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel4)
@@ -243,11 +276,12 @@ public class FrmFacturacion extends javax.swing.JInternalFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel1)
                         .addComponent(jLabel2)
-                        .addComponent(cmbCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
+                        .addComponent(cmbCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnEliminarFactura)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregarProducto)
-                    .addComponent(jButton2))
+                    .addComponent(btnEliminar))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -265,20 +299,73 @@ public class FrmFacturacion extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProductoActionPerformed
-        String cedula = cmbCliente.getSelectedItem().toString();
-        cedula = cedula.substring(0, 9);
-        JOptionPane.showMessageDialog(this, "Cedula: " + cedula);
+//        String cedula = cmbCliente.getSelectedItem().toString();
+//        cedula = cedula.substring(0, 9);
+//        JOptionPane.showMessageDialog(this, "Cedula: " + cedula);
+        winProductos.setTitle("Agregar producto");
+        winProductos.setSize(440, 350);
+        winProductos.setLocationRelativeTo(this);
+        winProductos.setVisible(true);
+        txtIdProducto.setText("");
+        txtCantidad.setText("");
     }//GEN-LAST:event_btnAgregarProductoActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        winProductos.dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+        String error = validarCampos();
+        if (error.equals("")) {
+
+            Inventario inventario = new Inventario();
+            inventario = inventarioService.getInventoryItem(txtIdProducto.getText());
+            listaProductos.add(inventario);
+            cargarProductos();
+            winProductos.dispose();
+        } else {
+            JOptionPane.showMessageDialog(winProductos, error, "Error",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAceptarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        int fila = tblProductos.getSelectedRow();
+        if (fila != -1) {
+            Inventario producto = inventarioService.getInventoryItem(
+                    tblProductos.getValueAt(fila, 0).toString());
+            for (Inventario inventario : listaProductos) {
+                if(inventario == producto){
+                    listaProductos.remove(producto);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar una fila");
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnEliminarFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarFacturaActionPerformed
+        int opcion = JOptionPane.showConfirmDialog(this, "Seguro que desea eliminar"
+                + " esta factura?",
+                "Eliminar factura",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if (opcion == 0) {
+            
+            
+        }
+    }//GEN-LAST:event_btnEliminarFacturaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnAgregarProducto;
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnEliminarFactura;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnProcesar;
     private javax.swing.JComboBox<String> cmbCliente;
-    private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -289,21 +376,56 @@ public class FrmFacturacion extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTable tblProductos;
+    private javax.swing.JTextField txtCantidad;
+    private javax.swing.JTextField txtIdProducto;
     private javax.swing.JDialog winProductos;
     // End of variables declaration//GEN-END:variables
 
+    public void cargarProductos() {
+        String row[] = new String[5];
+        for (Inventario inventario : listaProductos) {
+            row[0] = inventario.getCodigo();
+            row[1] = inventario.getDescripcion();
+            row[2] = "" + inventario.getCantidad();
+            row[3] = "" + inventario.getPrecioUnitario();
+            row[4] = "" + inventario.getTotal();
+            tabla.addRow(row);
+        }
+        tblProductos.setModel(tabla);
 
-    public void cargarDatos(){
-        DefaultTableModel tabla = new DefaultTableModel();
+    }
+
+    public void cargarClientes() {
+        tabla = new DefaultTableModel();
         tabla.setColumnIdentifiers(labels);
+        tblProductos.setModel(tabla);
         cmbCliente.removeAllItems();
         cmbCliente.addItem("Seleccione");
-        for(Cliente cliente : clienteService.getClientes()){
-            cmbCliente.addItem(cliente.getId() + " - " + cliente.getNombre() + " " 
+        for (Cliente cliente : clienteService.getClientes()) {
+            cmbCliente.addItem(cliente.getId() + " - " + cliente.getNombre() + " "
                     + cliente.getApellido1() + " " + cliente.getApellido2());
         }
+    }
+
+    private String validarCampos() {
+
+        if (txtIdProducto.getText().trim().equals("")) {
+            txtIdProducto.requestFocus();
+            return "Debe ingresar el código";
+        }
+        if (txtCantidad.getText().trim().equals("")) {
+            txtCantidad.requestFocus();
+            return "Debe ingresar la cantidad";
+        } else {
+            try {
+                Integer.parseInt(txtCantidad.getText());
+            } catch (NumberFormatException ex) {
+                txtCantidad.requestFocus();
+                return "La cantidad debe ser solo numeros";
+            }
+        }
+
+        return "";
     }
 }
